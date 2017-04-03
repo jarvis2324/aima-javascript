@@ -2,9 +2,10 @@ $(document).ready(function() {
   var w = 600,
     h = 350;
   var DELAY = 2000;
+  var intervalFunction = null;
 
   function init() {
-
+    clearInterval(intervalFunction, DELAY);
     var priorityQueueCanvas = document.getElementById('priorityQueueCanvas');
     var exploredQueueCanvas = document.getElementById('exploredPriorityQueueCanvas');
     priorityQueueCanvas.innerHTML = '';
@@ -43,13 +44,16 @@ $(document).ready(function() {
         graphDrawAgent.iterate();
         drawList(priorityTwo, graphProblem.frontier, graphProblem, options, costMap);
         drawList(exploredTwo, graphProblem.explored, graphProblem, options, costMap);
-        let maxCost = graphProblem.nodes[graphProblem.nextToExpand].cost;
+        let maxCost = 0;
+        if (graphProblem.nextToExpand) {
+          maxCost = graphProblem.nodes[graphProblem.nextToExpand].cost;
+        }
         $('.ucsSeparation').html(maxCost);
       } else {
         clearInterval(intervalFunction, DELAY);
       }
     }
-    var intervalFunction = setInterval(updateFunction, DELAY);
+    intervalFunction = setInterval(updateFunction, DELAY);
   };
   $('#ucsRestartButton').click(init);
   $('#ucsWaiting').css('background-color', 'hsl(200,50%,70%)');

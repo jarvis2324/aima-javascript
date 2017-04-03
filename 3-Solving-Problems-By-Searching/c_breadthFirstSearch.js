@@ -2,8 +2,10 @@ $(document).ready(function() {
   var w = 600,
     h = 350;
   var DELAY = 2000;
+  var intervalFunction = null;
 
   function init() {
+    clearInterval(intervalFunction, DELAY);
     var graph = new DefaultGraph();
     var graphProblem = new GraphProblem(graph.nodes, graph.edges, 'A', 'A');
     var graphAgent = new GraphAgent(graphProblem);
@@ -29,7 +31,7 @@ $(document).ready(function() {
         clearInterval(intervalFunction, DELAY);
       }
     }
-    var intervalFunction = setInterval(updateFunction, DELAY);
+    intervalFunction = setInterval(updateFunction, DELAY);
   };
   $('#bfsRestartButton').click(init);
   $('#fifoWaiting').css('background-color', 'hsl(200,50%,70%)');

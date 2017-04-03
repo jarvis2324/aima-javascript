@@ -39,7 +39,7 @@ $(document).ready(function() {
     two.clear();
     path.path = path.path.reverse();
     let runningCost = 0;
-    var i, x1, x2, y;
+    var i, x1, x2, y = 20;
     for (i = 0; i < path.path.length - 1; i++) {
       x1 = i * 65 + 20;
       x2 = (i + 1) * 65 + 20;
@@ -113,6 +113,5 @@ $(document).ready(function() {
     bfsGraphDrawAgent = new GraphDrawAgent(graphProblem, 'no-costGraphCanvas', options, h, w);
     ucsGraphDrawAgent = new GraphDrawAgent(graphProblem, 'costGraphCanvas', options, h, w);
   };
-  $('#ucsRestartButton').click(init);
   init();
 });

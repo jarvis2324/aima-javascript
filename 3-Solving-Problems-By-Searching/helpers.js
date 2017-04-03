@@ -6,6 +6,7 @@ var GraphNode = function(x, y, id, text) {
   this.state = 'unexplored';
   this.cost = Number.POSITIVE_INFINITY;
   this.parent = null;
+  this.depth = Number.POSITIVE_INFINITY;
 };
 
 function getEdgeCostLocation(x1, y1, x2, y2) {
@@ -115,6 +116,7 @@ var GraphProblem = function(nodes, edges, initialKey, nextToExpand) {
   this.nodes[initialKey].state = 'frontier';
   this.nodes[initialKey].cost = 0;
   this.nodes[initialKey].parent = null;
+  this.nodes[initialKey].depth = 0;
   this.initialKey = initialKey;
   this.frontier = [initialKey];
   this.explored = [];
@@ -158,13 +160,12 @@ var GraphProblem = function(nodes, edges, initialKey, nextToExpand) {
   };
 };
 
-var GraphAgent = function(problem) {
+var GraphAgent = function(problem,algo) {
   this.problem = problem;
-
+  this.algo = algo;
   this.expand = function(nodeKey) {
     this.problem.removeFromFrontier(nodeKey);
     this.problem.addToExplored(nodeKey);
-
     let adjacent = this.problem.getAdjacent(nodeKey);
     for (var i = 0; i < adjacent.length; i++) {
       let nextNodeKey = adjacent[i].nodeKey;
@@ -173,10 +174,19 @@ var GraphAgent = function(problem) {
         this.problem.addToFrontier(nextNodeKey);
         nextNode.cost = adjacent[i].cost + this.problem.nodes[nodeKey].cost;
         nextNode.parent = nodeKey;
+        nextNode.depth = this.problem.nodes[nodeKey].depth + 1;
       }
-      if (nextNode.state == 'frontier' && nextNode.cost > adjacent[i].cost + this.problem.nodes[nodeKey].cost) {
-        nextNode.cost = adjacent[i].cost + this.problem.nodes[nodeKey].cost;
-        nextNode.parent = nodeKey;
+      if(this.algo == 'ucs') {
+        if (nextNode.state == 'frontier' && nextNode.cost > adjacent[i].cost + this.problem.nodes[nodeKey].cost) {
+          nextNode.cost = adjacent[i].cost + this.problem.nodes[nodeKey].cost;
+          nextNode.parent = nodeKey;
+        }
+      }
+      if(this.algo == 'dfs') {
+        if (nextNode.state == 'frontier' && nextNode.depth < (this.problem.nodes[nodeKey].depth + 1)) {
+          nextNode.depth = this.problem.nodes[nodeKey].depth + 1;
+          nextNode.parent = nodeKey;
+        }
       }
     }
   };
