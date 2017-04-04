@@ -9,8 +9,11 @@ $(document).ready(function() {
     var graphAgent = new GraphAgent(graphProblem);
     var frontierNodesAgent = new DrawFrontierAgent('frontierCanvas', 150, 250, graphProblem);
     var options = new DefaultOptions();
+    //Function to execute whenever a node is clicked
     var clickHandler = function() {
+      //Find out which node has been clicked
       let nodeKey = $(this).attr('nodeKey');
+      //Expand it
       graphAgent.expand(nodeKey);
       graphDrawAgent.iterate();
       frontierNodesAgent.iterate();
@@ -35,6 +38,7 @@ $(document).ready(function() {
     var graphProblem = new GraphProblem(graph.nodes, graph.edges, String.fromCharCode(65 + Math.random() * 15), null);
     var graphAgent = new GraphAgent(graphProblem);
     var options = new DefaultOptions();
+    //For this simulation, unexplored nodes and edges needs to be invisible
     options.nodes.unexplored.opacity = 0;
     options.edges.unvisited.opacity = 0;
     var clickHandler = function() {
@@ -55,7 +59,7 @@ $(document).ready(function() {
 });
 
 
-
+//Function to draw the frontier nodes
 function DrawFrontierAgent(selector, h, w, problem) {
   this.canvas = document.getElementById(selector);
   this.canvas.innerHTML = '';
