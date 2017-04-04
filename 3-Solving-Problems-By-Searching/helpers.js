@@ -1,3 +1,4 @@
+// Structure of all nodes of a graph
 var GraphNode = function(x, y, id, text) {
   this.x = x;
   this.y = y;
@@ -8,7 +9,9 @@ var GraphNode = function(x, y, id, text) {
   this.parent = null;
   this.depth = Number.POSITIVE_INFINITY;
 };
-
+// A function that takes as input the coordinates of an edges
+// and gives out the coordinates of the location where its cost should be mentioned
+// Uses a little trigonometry :)
 function getEdgeCostLocation(x1, y1, x2, y2) {
   var midx = (x1 + x2) / 2;
   var midy = (y1 + y2) / 2;
@@ -19,56 +22,58 @@ function getEdgeCostLocation(x1, y1, x2, y2) {
   }
   return coords;
 };
-
+// Default Options that can be used to pass in a graph Draw Agent
 var DefaultOptions = function() {
-  this.nodes = {
-    explored: {
-      fill: 'hsl(0,50%,75%)',
-      stroke: 'black',
-      opacity: 1,
-      clickHandler: null,
-      onMouseEnter: null,
-      onMouseLeave: null
-    },
-    unexplored: {
-      fill: 'hsl(0, 2%, 76%)',
-      stroke: 'black',
-      opacity: 1,
-      clickHandler: null,
-      onMouseEnter: null,
-      onMouseLeave: null
-    },
-    frontier: {
-      fill: 'hsl(200,50%,70%)',
-      stroke: 'black',
-      opacity: 1,
-      clickHandler: null,
-      onMouseEnter: null,
-      onMouseLeave: null
-    },
-    next: {
-      fill: 'hsl(200,50%,70%)',
-      stroke: 'black',
-      opacity: 1,
-      clickHandler: null,
-      onMouseEnter: null,
-      onMouseLeave: null
-    },
-    nodeRadius: 16,
-  };
-  this.edges = {
-    lineWidth: 2,
-    showCost: false,
-    visited: {
-      lineWidth: 10,
-      opacity: 1
-    },
-    unvisited: {
-      lineWidth: 10,
-      opacity: 1
+    this.nodes = {
+      explored: {
+        fill: 'hsl(0,50%,75%)',
+        stroke: 'black',
+        opacity: 1,
+        clickHandler: null,
+        onMouseEnter: null,
+        onMouseLeave: null
+      },
+      unexplored: {
+        fill: 'hsl(0, 2%, 76%)',
+        stroke: 'black',
+        opacity: 1,
+        clickHandler: null,
+        onMouseEnter: null,
+        onMouseLeave: null
+      },
+      frontier: {
+        fill: 'hsl(200,50%,70%)',
+        stroke: 'black',
+        opacity: 1,
+        clickHandler: null,
+        onMouseEnter: null,
+        onMouseLeave: null
+      },
+      next: {
+        fill: 'hsl(200,50%,70%)',
+        stroke: 'black',
+        opacity: 1,
+        clickHandler: null,
+        onMouseEnter: null,
+        onMouseLeave: null
+      },
+      nodeRadius: 16,
+    };
+    this.edges = {
+      lineWidth: 2,
+      showCost: false,
+      visited: {
+        lineWidth: 10,
+        opacity: 1
+      },
+      unvisited: {
+        lineWidth: 10,
+        opacity: 1
+      }
     }
   }
-}
+  // The default graph that is used in most of the simulation
+  // This ensures consistency in the experience of the user
 var DefaultGraph = function() {
   this.nodes = {
     'A': new GraphNode(50, 100, 'A', 'A'),
@@ -109,7 +114,7 @@ var DefaultGraph = function() {
     ['N', 'O', 2]
   ];
 };
-
+// Structure for the graph problem for the simulations
 var GraphProblem = function(nodes, edges, initialKey, nextToExpand) {
   this.nodes = nodes;
   this.edges = edges;
@@ -120,8 +125,10 @@ var GraphProblem = function(nodes, edges, initialKey, nextToExpand) {
   this.initialKey = initialKey;
   this.frontier = [initialKey];
   this.explored = [];
+  //Used for BFS,DFS,UCS etc where it is important to show the next node which
+  //will be expanded from the graph before actually expanding it.
   this.nextToExpand = nextToExpand;
-
+  //Takes a node and returns a list of its adjacent nodes
   this.getAdjacent = function(nodeKey) {
     var edges = this.edges.filter((edge) => edge[0] == nodeKey || edge[1] == nodeKey);
     var adjacent = [];
@@ -140,7 +147,7 @@ var GraphProblem = function(nodes, edges, initialKey, nextToExpand) {
     }
     return adjacent;
   };
-
+  //Check if an edge is already visited
   this.ifEdgeVisited = function(edge) {
     return this.nodes[edge[0]].state == 'explored' || this.nodes[edge[1]].state == 'explored';
   }
@@ -159,40 +166,41 @@ var GraphProblem = function(nodes, edges, initialKey, nextToExpand) {
     this.nodes[nodeKey].state = 'explored';
   };
 };
-
-var GraphAgent = function(problem,algo) {
-  this.problem = problem;
-  this.algo = algo;
-  this.expand = function(nodeKey) {
-    this.problem.removeFromFrontier(nodeKey);
-    this.problem.addToExplored(nodeKey);
-    let adjacent = this.problem.getAdjacent(nodeKey);
-    for (var i = 0; i < adjacent.length; i++) {
-      let nextNodeKey = adjacent[i].nodeKey;
-      let nextNode = this.problem.nodes[nextNodeKey];
-      if (nextNode.state == 'unexplored') {
-        this.problem.addToFrontier(nextNodeKey);
-        nextNode.cost = adjacent[i].cost + this.problem.nodes[nodeKey].cost;
-        nextNode.parent = nodeKey;
-        nextNode.depth = this.problem.nodes[nodeKey].depth + 1;
-      }
-      if(this.algo == 'ucs') {
-        if (nextNode.state == 'frontier' && nextNode.cost > adjacent[i].cost + this.problem.nodes[nodeKey].cost) {
+//An agent that can work on the graph by expanding nodes
+var GraphAgent = function(problem, algo) {
+    this.problem = problem;
+    this.algo = algo;
+    //The function that expands a node from the graph
+    this.expand = function(nodeKey) {
+      this.problem.removeFromFrontier(nodeKey);
+      this.problem.addToExplored(nodeKey);
+      let adjacent = this.problem.getAdjacent(nodeKey);
+      for (var i = 0; i < adjacent.length; i++) {
+        //For every adjacent node
+        let nextNodeKey = adjacent[i].nodeKey;
+        let nextNode = this.problem.nodes[nextNodeKey];
+        if (nextNode.state == 'unexplored') {
+          //If the adjacent node is unexplored,
+          this.problem.addToFrontier(nextNodeKey);
+          //Add it to frontier and update its properties
           nextNode.cost = adjacent[i].cost + this.problem.nodes[nodeKey].cost;
           nextNode.parent = nodeKey;
-        }
-      }
-      if(this.algo == 'dfs') {
-        if (nextNode.state == 'frontier' && nextNode.depth < (this.problem.nodes[nodeKey].depth + 1)) {
           nextNode.depth = this.problem.nodes[nodeKey].depth + 1;
-          nextNode.parent = nodeKey;
+        }
+        //In UCS, Some extra logic is involved
+        if (this.algo == 'ucs') {
+          //If the node which is in frontier has cost lower than the new cost,
+          if (nextNode.state == 'frontier' && nextNode.cost > adjacent[i].cost + this.problem.nodes[nodeKey].cost) {
+            //Assign the lower cost
+            nextNode.cost = adjacent[i].cost + this.problem.nodes[nodeKey].cost;
+            nextNode.parent = nodeKey;
+          }
         }
       }
-    }
-  };
+    };
 
-}
-
+  }
+  // An agent which draws the graphs to the page
 var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
   this.canvas = document.getElementById(selector);
   this.canvas.innerHTML = '';
@@ -215,10 +223,10 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
     this.drawEdges();
     this.drawNodes();
   };
-
+  //Draws the edges
   this.drawEdges = function() {
     let edgeOptions = this.options.edges;
-    let edges = this.problem.edges;;
+    let edges = this.problem.edges;
     for (var i = 0; i < edges.length; i++) {
       let edge = edges[i];
       let node1 = this.problem.nodes[edge[0]];
@@ -235,10 +243,13 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
         line.lineWidth = edgeOptions.visited.lineWidth;
         line.opacity = edgeOptions.visited.opacity;
       }
+      //If cost needs to be shown, draw it
       if (edgeOptions.showCost) {
         let coords = getEdgeCostLocation(node1.x, node1.y, node2.x, node2.y);
         this.two.makeText(cost, coords.x, coords.y);
       }
+      //two needs to be updated so that it is drawn on the page.
+      //Only after it is drawn, we can use the jquery functions on it.
       this.two.update();
       $(line._renderer.elem).attr('node1', node1.id);
       $(line._renderer.elem).attr('node2', node2.id);
@@ -246,6 +257,7 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
     }
     this.two.update();
   };
+  //Draws the nodes
   this.drawNodes = function() {
     let nodeOptions = this.options.nodes;
     let nodeDict = this.problem.nodes;
@@ -277,7 +289,7 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
     }
     this.two.update();
   };
-
+  //Updates the nodes
   this.iterateNodes = function() {
     let nodeOptions = this.options.nodes;
     for (var i = 0; i < this.nodeGroups.length; i++) {
@@ -302,6 +314,8 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
         $(group._renderer.elem).css('cursor', 'auto');
         group._renderer.elem.onclick = null;
       }
+      //Special case for cost detail diagram right now, but can be assigned
+      //other functions to improve other diagrams too
       group._renderer.elem.onmouseenter = currentOptions.onMouseEnter;
       group._renderer.elem.onmouseleave = currentOptions.onMouseLeave;
       group.opacity = currentOptions.opacity;
@@ -309,7 +323,7 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
     }
     this.two.update();
   };
-
+  //Update the edges
   this.iterateEdges = function() {
     let edgeOptions = this.options.edges;
     let edges = this.edges;
@@ -341,7 +355,7 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
 
 
 
-// Class for drawing frontier nodes for first visualization
+// An agent to draw queues for bfs and dfs
 function QueueDrawAgent(selector, h, w, problem, options) {
   this.canvas = document.getElementById(selector);
   this.canvas.innerHTML = '';

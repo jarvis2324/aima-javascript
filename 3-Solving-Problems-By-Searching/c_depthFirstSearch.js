@@ -17,6 +17,8 @@ $(document).ready(function() {
       if (graphProblem.frontier.length > 0) {
         var nextNode = depthFirstSearch(graphProblem);
         graphAgent.expand(nextNode);
+        //If frontier is still present, find the next node to be expanded so it
+        //could be colored differently
         if (graphProblem.frontier.length > 0) {
           graphProblem.nextToExpand = depthFirstSearch(graphProblem);
         } else {

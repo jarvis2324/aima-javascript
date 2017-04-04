@@ -18,14 +18,17 @@ $(document).ready(function() {
       height: h,
       width: w
     }).appendTo(exploredQueueCanvas);
+    //Intial value for separation is 0
     $('.ucsSeparation').html(0);
     var graph = new DefaultGraph();
+    //Precompute costs of all nodes from the initial node
     var costMap = precomputedCosts();
     var graphProblem = new GraphProblem(graph.nodes, graph.edges, 'A', 'A');
+    //Change the text of all the nodes to its cost
     for (key in graphProblem.nodes) {
       graphProblem.nodes[key].text = costMap[graphProblem.nodes[key].id];
     }
-    var graphAgent = new GraphAgent(graphProblem);
+    var graphAgent = new GraphAgent(graphProblem, 'ucs');
     var options = new DefaultOptions();
     options.nodes.next.fill = 'hsla(126, 100%, 69%, 1)';
     options.edges.showCost = true;
@@ -45,9 +48,11 @@ $(document).ready(function() {
         drawList(priorityTwo, graphProblem.frontier, graphProblem, options, costMap);
         drawList(exploredTwo, graphProblem.explored, graphProblem, options, costMap);
         let maxCost = 0;
+        //Find the max cost which separates the explored from frontier nodes
         if (graphProblem.nextToExpand) {
           maxCost = graphProblem.nodes[graphProblem.nextToExpand].cost;
         }
+        //Draw it in the front end
         $('.ucsSeparation').html(maxCost);
       } else {
         clearInterval(intervalFunction, DELAY);
@@ -61,7 +66,7 @@ $(document).ready(function() {
   $('#ucsExploredNode').css('background-color', 'hsl(0,50%,75%)');
   init();
 });
-
+//Function to draw the list of nodes for both canvas
 function drawList(two, list, problem, options, costMap) {
   two.clear();
   for (var i = 0; i < list.length; i++) {
