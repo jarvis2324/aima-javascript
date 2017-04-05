@@ -73,5 +73,7 @@ $(document).ready(function() {
   //Restart the simulation when limit is changed
   $('#limitSelector').change(init);
   init();
-
+  $('#limitSelector').on('input change', function () {
+      $('#limitSelectorText').text($(this).val());
+  });
 });
