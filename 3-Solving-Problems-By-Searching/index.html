@@ -15,6 +15,7 @@
   <script type="text/javascript" src="./iterativeDeepening.js"></script>
   <script type="text/javascript" src="./uniformCostSearch.js"></script>
   <script type="text/javascript" src="./costDetails.js"></script>
+  <script type="text/javascript" src="./bidirectional.js"></script>
 
   <script type="text/javascript" src="./c_aStarSearch.js"></script>
   <script type="text/javascript" src="./c_bestFirstSearch.js"></script>
@@ -25,6 +26,8 @@
   <script type="text/javascript" src="./c_uniformCostSearch.js"></script>
   <script type="text/javascript" src="./c_nodeExpansion.js"></script>
   <script type="text/javascript" src="./c_costDetails.js"></script>
+  <script type="text/javascript" src="./c_bidirectional.js"></script>
+
   <script>
     $(function() {
       $('header').load("../header.html");
@@ -366,6 +369,27 @@
           </div>
         </div>
       </div>
+
+
+
+      <div class="row">
+        <div class="col-md-6 col-sm-6">
+          <h2>Bi-directional Breadth First Search</h2>
+          <p>In Breadth First Search, the node which was discovered the earliest is expanded next i.e. the node which joined the frontier earlier, is expanded earlier.</p>
+          <p>
+            To achieve this, Breadth First Search Algorithm uses a FIFO(First In First Out) Queue. The following graph is explored by a Breadth First Search Algorithm with 'A' as the initial node.
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6 col-md-6">
+          <div class='btn btn-primary' id='bibfsRestartButton'>Restart</div>
+          <div class="canvas" id="bibreadthFirstSearchCanvas" height="300px">
+          </div>
+        </div>
+      </div>
+
 
       <h2>A Star Search</h2>
       <p>Click on the canvas to restart the simulation</p>
