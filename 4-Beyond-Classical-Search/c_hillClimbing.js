@@ -1,145 +1,192 @@
-$(document).ready(function(){
-	$.ajax({
-		url : "hillClimbing.js",
-		dataType: "text",
-		success : function (data) {
-			$("#hillCode").html(data);
-		}
-	});
+$(document).ready(function() {
 
-	var two;
-	var hillClimber;
-	var climberHandle;
-	var terrain;
-	var hillCanvas;
-	var w,h;
 
-	var positionX;
-	var positionY;
-	var terrainSize;
+  //Class to draw the hills
+  class HillDiagram {
+    constructor(hill, svg, h, w) {
+      this.padding = 20;
+      this.hill = hill
+      this.h = h;
+      this.w = w;
+      this.svg = svg;
+      this.states = this.hill.getStates();
+      this.hillData = [];
+      for (let i = 0; i < this.states.length; i++) {
+        this.hillData.push({
+          state: i,
+          objective: this.states[i],
+          visited: false,
+          maxima: false
+        })
+      }
 
-	var DELAY = 60 * 1; // 60FPS
-	var SIZE = 20; // Size of the square
+      let maximas = this.hill.getBestStates();
+      for (let i = 0; i < maximas.length; i++) {
+        this.hillData[maximas[i]].maxima = true;
+      }
 
-	function init(){
-		// Initialize variables
-		hillCanvas = document.getElementById("hillCanvas");
-		hillCanvas.addEventListener("click", handleClick, false);
-		w = hillCanvas.offsetWidth,h = 300;
-		two = new Two({ width: w, height: h }).appendTo(hillCanvas);
-		hillClimber = new HillClimber();
-		terrainSize = w/SIZE;
-		seaLevel = h/SIZE/2;
 
-		// Generate terrain and draw background
-		terrain = generateTerrain(seaLevel,terrainSize);
-		drawBackground(terrain);
+      this.xScale = d3.scaleLinear()
+        .domain([0, this.states.length])
+        .range([this.padding, this.w - this.padding]);
+      this.blockWidth = (this.xScale(this.states.length) - this.xScale(0)) / this.states.length;
+      this.yScale = d3.scaleLinear()
+        .domain([0, d3.max(this.states)])
+        .range([this.padding, this.h - this.padding]);
+      this.renderHill();
 
-		// The robot starts from position 1
-		// The height depends on the terrain
-		positionX = 1;
-		positionY = terrain[positionX];
+    }
+    renderHill() {
+      this.svgHill = this.svg.selectAll('.block')
+        .data(this.hillData)
+        .enter()
+        .append('g')
+        .attr('class', 'block');
+      this.svgRects = this.svgHill
+        .append('rect')
+        .attr('height', d => this.yScale(d.objective))
+        .attr('width', this.blockWidth)
+        .attr('x', (d) => this.xScale(d.state))
+        .attr('y', (d) => this.h - this.yScale(d.objective))
+        .style('opacity', (d) => (d.visited) ? 1 : 0)
+        .style('fill', 'hsl(217,61.2%,53.5%)')
+        .style('border', '1px solid');
+    }
 
-		// Handle for the square drawn on the screen
-		// Y axis is inverted
-		climberHandle = two.makeRectangle(positionX * SIZE,
-			h - positionY * SIZE,
-			SIZE,SIZE);
-			climberHandle.noStroke();
-			climberHandle.fill = 'rgb(213, 0, 11)';
+    visit(state) {
+      this.hillData[state].visited = true;
+      this.svgRects.filter((d) => d.state == state)
+        .transition()
+        .duration(100)
+        .style('opacity', 1);
+    }
 
-			two.update();
-		}
+    showAll() {
+      this.svgRects.transition()
+        .duration(100)
+        .style('opacity', (d) => {
+          return (d.visited) ? 1 : 0.6;
+        })
+        .style('fill', (d) => {
+          if (d.maxima) {
+            if (d.visited) {
+              return 'hsl(110, 100%, 38%)';
+            } else {
+              return 'hsl(102, 100%, 56%)';
+            }
+          } else {
+            return 'hsl(217,61.2%,53.5%)';
+          }
+        })
+    }
+  }
 
-		init();
+  //Class to draw the robot
+  class HillClimberDiagram {
+    constructor(hill, svg, h, w, hillDiagram, hillClimber) {
+      this.h = h;
+      this.w = w;
+      this.hill = hill;
+      this.hillDiagram = hillDiagram;
+      this.hillClimber = hillClimber;
+      this.states = this.hill.getStates();
+      this.svg = svg;
+      this.xScale = this.hillDiagram.xScale;
+      this.yScale = this.hillDiagram.yScale;
+      this.blockWidth = this.hillDiagram.blockWidth;
+      this.renderHillClimber();
+    }
+    renderHillClimber() {
+      let robotLocation = this.hillClimber.getCurrentState();
+      let robotStateValue = this.states[robotLocation];
+      this.robot = this.svg.append('g')
+        .attr('class', 'robot')
+        .append('rect')
+        .attr('height', '10px')
+        .attr('width', this.blockWidth)
+        .attr('x', this.xScale(robotLocation))
+        .attr('y', this.h - this.yScale(robotStateValue) - 10)
+        .style('fill', 'red');
+      this.hillDiagram.visit(robotLocation);
 
-		var m_frame = DELAY;
-		var direction;
-		two.bind('update', function(frameCount) {
-			if(m_frame == DELAY){
-				direction = hillClimber.decide(terrain[positionX-1],
-					terrain[positionX],
-					terrain[positionX+1]);
-					//console.log("Direction = " + direction);
-					//console.log(terrain[positionX-1] + " " + terrain[positionX+1]);
-					positionX += direction;
-					m_frame = 0;
-				} else {
-					m_frame++;
-					var t = m_frame/DELAY; // Interpolation factor
-					animateClimber(t,direction);
-				}
+    }
+    move(state) {
+      let robotLocation = state;
+      let robotStateValue = this.states[state];
+      this.robot.transition()
+        .duration(100)
+        .attr('x', this.xScale(robotLocation))
+        .attr('y', this.h - this.yScale(robotStateValue) - 10);
+    }
+  }
 
-			}).play();
+  //Wrapper class for the entire diagram
+  class HillClimbingDiagram {
+    constructor(selector, h, w) {
+      this.h = h;
+      this.w = w;
+      this.svg = d3.select(selector).html("")
+        .append('svg')
+        .attr('height', this.h)
+        .attr('width', this.w)
+        .attr('border', 2);
 
-			function animateClimber(t,direction){
-				// If not moving then return
-				if(!direction)
-				return;
+      this.hill = new Hill();
+      this.hillClimber = new HillClimber(this.hill);
+      this.hillDiagram = new HillDiagram(this.hill, this.svg, this.h, this.w);
+      this.hillClimberDiagram = new HillClimberDiagram(this.hill, this.svg, this.h, this.w, this.hillDiagram, this.hillClimber);
+      this.bindClicks();
 
-				var x,y;
-				var curX = positionX - direction;
-				var curY = terrain[curX];
-				var newX = curX + direction;
-				var newY = terrain[newX];
+      this.borderPath = this.svg.append('rect')
+        .attr('x', this.hillDiagram.padding)
+        .attr('y', 0)
+        .attr('height', this.h)
+        .attr('width', this.w - 2 * this.hillDiagram.padding)
+        .style('stroke', 'black')
+        .style('fill', 'none')
+        .style('stroke-width', 1);
 
-				if(t < .5){
-					// Go up
-					t1 = t * 2;
-					x = curX;
-					y = t1 * newY + (1-t1) * curY;
-				} else {
-					// Go in the direction
-					t1 = (t-.5) * 2;
-					y = newY;
-					x = t1 * newX + (1-t1) * curX;
-				}
+      this.moves = 0;
+      this.maxMoves = 15;
+      this.moveAllowed = true;
+      this.updateMoves();
+    }
 
-				// Translate the climber
-				climberHandle.translation.set(x*SIZE,h - y*SIZE);
-			}
+    bindClicks() {
+      this.clickHandler = () => {
+        if (this.moveAllowed) {
+          let state = Math.floor(this.hillDiagram.xScale.invert(d3.mouse(this.svg.node())[0]));
+          if (state >= 0 && state < 100) {
+            this.hillClimber.changeState(state);
+            this.hillDiagram.visit(state);
+            this.hillClimberDiagram.move(state);
+            this.moves++;
+            this.updateMoves();
+            if (this.moves >= this.maxMoves) {
+              this.moveAllowed = false;
+              this.hillDiagram.showAll();
+            }
+          }
+        }
+      };
 
-			function drawBackground(terrain){
-				for(var x = 0; x < terrain.length; x++){
-					y = terrain[x];
-					two.makeRectangle(x * SIZE,
-						h - (y-1) * SIZE,
-						SIZE,SIZE)
-						.noStroke()
-						.fill = 'rgb(100, 155, 100)';
-					}
-				}
+      this.svg.on('mousedown', this.clickHandler);
+    }
 
-				function generateTerrain(seaLevel,terrainSize){
-					/*
-					var terrain = [seaLevel];
-					for(var i = 0; i < terrainSize; i++){
-					index = terrain.length-1;
-					if(Math.random() >= .5){
-					terrain.push(terrain[index]+1);
-				} else {
-				terrain.push(terrain[index]-1);
-			}
-		}
+    updateMoves() {
+      let leftMoves = this.maxMoves - this.moves;
+      if (leftMoves >= 0) {
+        d3.select('#hillMoves').html('Moves Left :' + (this.maxMoves - this.moves));
+      }
+    }
+    finish() {
+      this.hillDiagram.showAll();
+    }
+  }
 
-		return terrain;*/
-
-		// Handcrafted terrain
-		return [2,3,4,5,4,3,2,3,4,5,6,7,6,5,4,3,2,3,4,5,6,5,4,3,2,3,4,5,6,7,6,5,4,3,2,1];
-	}
-
-	var offset = $('#hillCanvas').offset();
-	function handleClick(evt){
-		m_frame = DELAY;
-		var x = (evt.pageX - offset.left);
-		//var y = (evt.pageY - offset.top);
-
-		positionX = parseInt((x+SIZE/2)/SIZE);
-		//console.log(parseInt(x) + " " +positionX);
-		positionY = terrain[positionX];
-
-		climberHandle.translation.set(positionX*SIZE,
-			h - positionY*SIZE);
-		}
-
-	});
+  function init() {
+    var diagram = new HillClimbingDiagram('#hillCanvas', 500, 1000);
+  }
+  init();
+  $('#hillClimbRestart').click(init);
+});

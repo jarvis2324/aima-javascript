@@ -3,37 +3,46 @@
 <head>
   <title>4 Beyond Classical Search</title>
   <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="main.css" charset="utf-8">
   <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
   <script type="text/javascript" src="../main.js"></script>
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.min.js"></script>
-  <script type="text/javascript" src="./geneticAlgorithm.js"></script>
-  <script type="text/javascript" src="./simulatedAnnealing.js"></script>
-  <script type="text/javascript" src="./hillClimbing.js"></script>
-  <script type="text/javascript" src="./andOrGraphSearch.js"></script>
-  <script type="text/javascript" src="./lrtaAgent.js"></script>
-  <script type="text/javascript" src="./onlineDfsAgent.js"></script>
 
-  <script type="text/javascript" src="./c_geneticAlgorithm.js"></script>
-  <script type="text/javascript" src="./c_simulatedAnnealing.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.min.js"></script>
+  <!-- <script type="text/javascript" src="./geneticAlgorithm.js"></script>
+  <script type="text/javascript" src="./simulatedAnnealing.js"></script> -->
+  <script type="text/javascript" src="./hillClimbing.js"></script>
+  <!-- <script type="text/javascript" src="./andOrGraphSearch.js"></script>
+  <script type="text/javascript" src="./lrtaAgent.js"></script>
+  <script type="text/javascript" src="./onlineDfsAgent.js"></script> -->
+
+  <!-- <script type="text/javascript" src="./c_geneticAlgorithm.js"></script>
+  <script type="text/javascript" src="./c_simulatedAnnealing.js"></script> -->
   <script type="text/javascript" src="./c_hillClimbing.js"></script>
-  <script type="text/javascript" src="./c_andOrGraphSearch.js"></script>
+  <!-- <script type="text/javascript" src="./c_andOrGraphSearch.js"></script>
   <script type="text/javascript" src="./c_lrtaAgent.js"></script>
-  <script type="text/javascript" src="./c_onlineDfsAgent.js"></script>
+  <script type="text/javascript" src="./c_onlineDfsAgent.js"></script> -->
 </head>
 <body>
 
   <div class="row">
-    <div class="col-sm-6 col-md-offset-3" id="content">
+    <div class="col-sm-6 col-md-8 col-md-offset-1" id="content">
       <h1>Beyond classical search</h1>
 
       <h2>Hill Climbing</h2>
       <p>Click on the canvas to move the robot to that position</p>
       <p>A small robot tries to get to the top.</p>
-      <div class = "canvas" id="hillCanvas" height="300px" style="background: rgb(154, 255, 255);">
+      <div class='row'>
+        <div class="col-md-2">
+          <div class='btn btn-primary restart-button' id='hillClimbRestart'>Restart</div>
+        </div>
+        <div class="col-md-4">
+          <h2 id = 'hillMoves'></h2>
+        </div>
+      </div>
+      <div id="hillCanvas">
       </div>
 
-      <pre id="hillCode"></pre>
 
       <h2>Simulated Annealing</h2>
       <p>Click on the screen to restart the simulation.</p>
