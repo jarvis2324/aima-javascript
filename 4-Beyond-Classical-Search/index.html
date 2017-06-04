@@ -29,9 +29,15 @@
     <div class="col-sm-6 col-md-8 col-md-offset-1" id="content">
       <h1>Beyond classical search</h1>
 
-      <h2>Hill Climbing</h2>
-      <p>Click on the canvas to move the robot to that position</p>
-      <p>A small robot tries to get to the top.</p>
+      <h2>Optimization Problem</h2>
+      <p>In many optimization problems, the path to the solution is irrelevant.
+      In pure optimization problems, the best state is defined by the objective function.
+      To represent such problems, a <b>state-space</b> landscape is used. It has a location (state)
+      represented by x-axis and elevation(objective function value) represented by y-axis. The best
+      state is hence the state with the highest objective value</p>
+      <p>The given diagram is a state-space representation of an objective function. You can click anywhere inside the box
+      to reveal the elevation there. You are allowed <i>25 moves</i> to <b>find the highest peak</b> before the hill is revealed.</p>
+      <p>Try to come up with a strategy that can be used for al kinds of hills.</p>
       <div class='row'>
         <div class="col-md-2">
           <div class='btn btn-primary restart-button' id='hillClimbRestart'>Restart</div>

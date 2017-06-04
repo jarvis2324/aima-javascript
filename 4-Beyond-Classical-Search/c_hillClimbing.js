@@ -94,6 +94,10 @@ $(document).ready(function() {
       this.xScale = this.hillDiagram.xScale;
       this.yScale = this.hillDiagram.yScale;
       this.blockWidth = this.hillDiagram.blockWidth;
+      this.botHeight = 50;
+      this.botWidth = this.blockWidth + 20;
+      this.xOffset = 10;
+      this.yOffset = 40;
       this.renderHillClimber();
     }
     renderHillClimber() {
@@ -101,12 +105,12 @@ $(document).ready(function() {
       let robotStateValue = this.states[robotLocation];
       this.robot = this.svg.append('g')
         .attr('class', 'robot')
-        .append('rect')
-        .attr('height', '10px')
-        .attr('width', this.blockWidth)
-        .attr('x', this.xScale(robotLocation))
-        .attr('y', this.h - this.yScale(robotStateValue) - 10)
-        .style('fill', 'red');
+        .append('svg:image')
+        .attr('xlink:href', 'robot.png')
+        .attr('height', this.botHeight)
+        .attr('width', this.botWidth)
+        .attr('x', this.xScale(robotLocation) - this.xOffset)
+        .attr('y', this.h - this.yScale(robotStateValue) - this.yOffset);
       this.hillDiagram.visit(robotLocation);
 
     }
@@ -115,8 +119,8 @@ $(document).ready(function() {
       let robotStateValue = this.states[state];
       this.robot.transition()
         .duration(100)
-        .attr('x', this.xScale(robotLocation))
-        .attr('y', this.h - this.yScale(robotStateValue) - 10);
+        .attr('x', this.xScale(robotLocation) - this.xOffset)
+        .attr('y', this.h - this.yScale(robotStateValue) - this.yOffset);
     }
   }
 
@@ -147,7 +151,7 @@ $(document).ready(function() {
         .style('stroke-width', 1);
 
       this.moves = 0;
-      this.maxMoves = 15;
+      this.maxMoves = 25;
       this.moveAllowed = true;
       this.updateMoves();
     }
