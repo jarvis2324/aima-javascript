@@ -1,3 +1,10 @@
+var colors = {
+  maxima: 'hsl(110, 100%, 38%)',
+  hill: 'hsl(217,61.2%,53.5%)',
+  unvisitedMaxima: 'hsl(102, 100%, 56%)',
+  GMRA: 'hsl(110, 100%, 60%)'
+};
+
 class HillDiagram {
   constructor(hill, svg, h, w) {
     this.padding = 20;
@@ -13,7 +20,7 @@ class HillDiagram {
         objective: this.states[i],
         visited: false,
         maxima: false
-      })
+      });
     }
 
     let maximas = this.hill.getBestStates();
@@ -32,6 +39,7 @@ class HillDiagram {
     this.renderHill();
 
   }
+
   renderHill() {
     this.svgHill = this.svg.selectAll('.block')
       .data(this.hillData)
@@ -45,7 +53,7 @@ class HillDiagram {
       .attr('x', (d) => this.xScale(d.state))
       .attr('y', (d) => this.h - this.yScale(d.objective))
       .style('opacity', (d) => (d.visited) ? 1 : 0)
-      .style('fill', 'hsl(217,61.2%,53.5%)')
+      .style('fill', colors.hill)
       .style('border', '1px solid');
   }
 
@@ -66,12 +74,12 @@ class HillDiagram {
       .style('fill', (d) => {
         if (d.maxima) {
           if (d.visited) {
-            return 'hsl(110, 100%, 38%)';
+            return colors.maxima;
           } else {
-            return 'hsl(102, 100%, 56%)';
+            return colors.unvisitedMaxima;
           }
         } else {
-          return 'hsl(217,61.2%,53.5%)';
+          return colors.hill;
         }
       })
   }
@@ -120,7 +128,6 @@ class HillClimberDiagram {
   }
 }
 
-//Wrapper class for the entire diagram
 class HillWorld {
   constructor(selector, h, w) {
     this.h = h;
@@ -146,17 +153,14 @@ class HillWorld {
       .style('stroke-width', 1);
 
   }
-
-
 }
 
-
-
+//First Diagram (interactive hill world)
 $(document).ready(function() {
 
-  class InteractiveHillWorld extends HillWorld{
-    constructor(selector,h,w) {
-      super(selector,h,w);
+  class InteractiveHillWorld extends HillWorld {
+    constructor(selector, h, w) {
+      super(selector, h, w);
       this.bindClicks();
 
       this.moves = 0;
@@ -203,34 +207,109 @@ $(document).ready(function() {
   init();
   $('#hillClimbRestart').click(init);
 });
-
+//Second diagram (Hill climbing Search)
 $(document).ready(function() {
-  class HCSearchDiagram  extends HillWorld{
-    constructor(selector,h,w) {
-      super(selector,h,w);
-      this.climber = this.hillClimber.climb();
-      this.intervalFunction = setInterval(() => {
-        if(!this.climb()) {
-          clearInterval(this.intervalFunction);
-        }
-      },500);
+  class HCSearchDiagram extends HillWorld {
+    constructor(selector, h, w) {
+      super(selector, h, w);
+      this.getGMRAreas();
+      this.colorGlobalRegions();
+      this.bindClicks();
+      this.startClimbing();
     }
-    climb() {
-      let next = this.climber.next();
-      console.log(next);
-      this.hillClimber.changeState(next.value);
-      this.hillClimberDiagram.move(next.value);
-      if(next.done) {
-        return false
-      } else{
-        return true
+
+    //GMRAreas => Global Maxima Reachable Areas
+    //Areas from where the globam maxima is reachable
+    getGMRAreas() {
+      let hillData = this.hillDiagram.hillData;
+      //Initialize to false
+      for (let i = 0; i < hillData.length; i++) {
+        hillData[i].isGMRA = false;
+      }
+
+      let bestStates = this.hill.getBestStates();
+      let states = this.hill.states;
+      //For every global maxima,
+      for (let i = 0; i < bestStates.length; i++) {
+        //Go right side
+        let j = bestStates[i] + 1;
+        while (j + 1 < states.length && states[j - 1] > states[j + 1]) {
+          hillData[j].isGMRA = true;
+          j++;
+        }
+        //corner case for the last state in the diagram
+        if (j == states.length - 1 && states[j - 1] > states[j]) {
+          hillData[j].isGMRA = true;
+        }
+        //Go left side
+        j = bestStates[i] - 1;
+        while (j - 1 >= 0 && states[j + 1] > states[j - 1]) {
+          hillData[j].isGMRA = true;
+          j--;
+        }
+        //corner case for the first state in the diagram
+        if (j == 0 && states[j + 1] > states[j]) {
+          hillData[j].isGMRA = true;
+        }
       }
     }
 
-    displayAllStates() {
-      
+    colorGlobalRegions() {
+      let svgRects = this.hillDiagram.svgRects;
+      svgRects.transition()
+        .duration(200)
+        .style('opacity', 1)
+        .style('fill', (d) => {
+          if (d.maxima) {
+            return colors.maxima;
+          } else {
+            if (d.isGMRA) {
+              return colors.GMRA;
+            } else {
+              return colors.hill;
+            }
+          }
+        });
     }
+
+    startClimbing() {
+      this.climber = this.hillClimber.climb();
+      this.stopClimbing();
+      this.intervalFunction = setInterval(() => {
+        if (!this.climb()) {
+          this.stopClimbing();
+        }
+      }, 500);
+    }
+    stopClimbing() {
+      clearInterval(this.intervalFunction);
+    }
+
+    climb() {
+      let next = this.climber.next();
+      this.hillClimber.changeState(next.value);
+      this.hillClimberDiagram.move(next.value);
+      if (next.done) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+
+    bindClicks() {
+      this.clickHandler = () => {
+        let state = Math.floor(this.hillDiagram.xScale.invert(d3.mouse(this.svg.node())[0]));
+        if (state >= 0 && state < 100) {
+          this.hillClimber.changeState(state);
+          this.hillClimberDiagram.move(state);
+          this.startClimbing();
+        }
+      };
+      this.svg.on('mousedown', this.clickHandler);
+    }
+
   }
+
   function init() {
     var diagram = new HCSearchDiagram('#hillSearchCanvas', 500, 1000);
   }

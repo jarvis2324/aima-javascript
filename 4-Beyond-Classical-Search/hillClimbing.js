@@ -48,6 +48,7 @@ class Hill {
     }
     return bestStates;
   }
+
 }
 
 class HillClimber {
@@ -89,9 +90,9 @@ class HillClimber {
     return this.decideNewState(options);
   }
 
-  *climb() {
+  * climb() {
     let newState = this.getNewState();
-    while(this.currentState != newState) {
+    while (this.currentState != newState) {
       yield newState;
       newState = this.getNewState();
     }

@@ -37,6 +37,8 @@
       state is hence the state with the highest objective value</p>
       <p>The given diagram is a state-space representation of an objective function. You can click anywhere inside the box
       to reveal the elevation there. You are allowed <i>25 moves</i> to <b>find the highest peak</b> before the hill is revealed.</p>
+      <p><span class='inline-legend maxima'></span> represents found global maximas and <span class='inline-legend unvisitedmaxima'></span>
+        represents unfound global maximas</p>
       <p>Try to come up with a strategy that can be used for al kinds of hills.</p>
       <div class='row'>
         <div class="col-md-2">
@@ -50,10 +52,17 @@
       </div>
 
       <h2>Hill Climbing Search</h2>
+      <p>In hill climbing search, the current node is replaced by the best neighbor. In this case, the objective function
+        is represented by elevation, neighbors of a state are the states to the left and right of it and the best neigbor
+        is the neigbor state with the highest elevation.</p>
+        <p>The <span class='inline-legend maxima'></span> represents global maximas and <span class='inline-legend grma'></span> represents
+        the states from where the hill climbing search can reach a global maxima.</p>
+        <p>Click on different states to start Hill Climbing Search from there and see which direction it prefers and when does it stop.</p>
+        <p>Use the restart button to try it on different kinds of hills.</p>
       <div class='row'>
         <div class="col-md-2">
           <div class='btn btn-primary restart-button' id='hillSearchRestart'>Restart</div>
-        </div>>
+        </div>
       </div>
       <div id="hillSearchCanvas">
       </div>
