@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>4 Beyond Classical Search</title>
   <link rel="stylesheet" href="../styles.css">
@@ -23,6 +24,7 @@
   <script type="text/javascript" src="./c_lrtaAgent.js"></script>
   <script type="text/javascript" src="./c_onlineDfsAgent.js"></script> -->
 </head>
+
 <body>
 
   <div class="row">
@@ -30,30 +32,40 @@
       <h1>Beyond classical search</h1>
 
       <h2>Optimization Problem</h2>
-      <p>In many optimization problems, the path to the solution is irrelevant.
-      In pure optimization problems, the best state is defined by the objective function.
-      To represent such problems, a <b>state-space</b> landscape is used. It has a location (state)
-      represented by x-axis and elevation(objective function value) represented by y-axis. The best
-      state is hence the state with the highest objective value</p>
-      <p>The given diagram is a state-space representation of an objective function. You can click anywhere inside the box
-      to reveal the elevation there. You are allowed <i>25 moves</i> to <b>find the highest peak</b> before the hill is revealed.</p>
+      <p>In many optimization problems, the path to the solution is irrelevant. In pure optimization problems, the best state is defined by the objective function. To represent such problems, a <b>state-space</b> landscape is used. It has a location (state)
+        represented by x-axis and elevation(objective function value) represented by y-axis. The best state is hence the state with the highest objective value</p>
+      <p>The given diagram is a state-space representation of an objective function. You can click anywhere inside the box to reveal the elevation there. You are allowed <i>25 moves</i> to <b>find the highest peak</b> before the hill is revealed.</p>
+      <p><span class='inline-legend maxima'></span> represents found global maximas and <span class='inline-legend unvisitedmaxima'></span> represents unfound global maximas</p>
       <p>Try to come up with a strategy that can be used for al kinds of hills.</p>
       <div class='row'>
         <div class="col-md-2">
           <div class='btn btn-primary restart-button' id='hillClimbRestart'>Restart</div>
         </div>
         <div class="col-md-4">
-          <h2 id = 'hillMoves'></h2>
+          <h2 id='hillMoves'></h2>
         </div>
       </div>
       <div id="hillCanvas">
       </div>
 
+      <h2>Hill Climbing Search</h2>
+      <p>In hill climbing search, the current node is replaced by the best neighbor. In this case, the objective function is represented by elevation, neighbors of a state are the states to the left and right of it and the best neigbor is the neigbor state
+        with the highest elevation.</p>
+      <p>The <span class='inline-legend maxima'></span> represents global maximas and <span class='inline-legend grma'></span> represents the states from where the hill climbing search can reach a global maxima.</p>
+      <p>Click on different states to start Hill Climbing Search from there and see which direction it prefers and when does it stop.</p>
+      <p>Use the restart button to try it on different kinds of hills.</p>
+      <div class='row'>
+        <div class="col-md-2">
+          <div class='btn btn-primary restart-button' id='hillSearchRestart'>Restart</div>
+        </div>
+      </div>
+      <div id="hillSearchCanvas">
+      </div>
 
       <h2>Simulated Annealing</h2>
       <p>Click on the screen to restart the simulation.</p>
       <p>The orange line represents the current position.</p>
-      <div class = "canvas" id="annealingCanvas" height="300px"></div>
+      <div class="canvas" id="annealingCanvas" height="300px"></div>
 
       <pre id="simulatedAnnealingCode"></pre>
 
@@ -61,33 +73,33 @@
       <p>Little critters change the color of their fur to match the background to camouflage themselves from predators.</p>
       <p>Click on the canvas to generate next generation. Keep clicking to generate another progeny.</p>
       <p>Note: Single point crossover might not be suitable for all applications</p>
-      <div class = "canvas" id="geneticCanvas" height="300px" style="background: #87BC5E">
+      <div class="canvas" id="geneticCanvas" height="300px" style="background: #87BC5E">
       </div>
 
       <pre id="geneticAlgorithmCode"></pre>
 
       <h2>And-Or-Graph-Search</h2>
-      <div class = "canvas" id="andOrGraphCanvas" height="300px">
+      <div class="canvas" id="andOrGraphCanvas" height="300px">
       </div>
       <pre id="andOrGraphSearchCode"></pre>
 
       <h2>Online DFS Agent</h2>
       <p>Click to reset. Green tile is destination.</p>
-      <div class = "canvas" id="onlineDfsCanvas" height="300px">
+      <div class="canvas" id="onlineDfsCanvas" height="300px">
       </div>
 
       <pre id="onlineDfsCode"></pre>
 
       <h2>LRTA*-Agent</h2>
       <p></p>
-      <div class = "canvas" id="lrtaCanvas" height="300px">
+      <div class="canvas" id="lrtaCanvas" height="300px">
         <p></p>
       </div>
 
       <pre id="lrtaCode"></pre>
 
 
-      <div class = 'license'>
+      <div class='license'>
         <h4>Third Party License Information</h4>
         <ul>
           <li><a href="https://thenounproject.com/term/robot/1248/">Robot by Simon Child, The Noun Project</a>, <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons BY-3.0</a></li>
@@ -96,6 +108,7 @@
 
     </div>
   </div>
-</div>
+  </div>
 </body>
+
 </html>

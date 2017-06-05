@@ -48,6 +48,7 @@ class Hill {
     }
     return bestStates;
   }
+
 }
 
 class HillClimber {
@@ -77,7 +78,7 @@ class HillClimber {
 
   //For hillclimbSearch
   getNewState() {
-    let currentState = this.hill.getCurrentState();
+    let currentState = this.currentState;
     let options = [];
     options.push(currentState);
     if (currentState + 1 < this.hill.getStates().length) {
@@ -86,10 +87,15 @@ class HillClimber {
     if (currentState - 1 >= 0) {
       options.push(currentState - 1);
     }
-    let newState = this.decideNewState(options);
-    return {
-      state: newState,
-      isNew: (newState == currentState)
-    };
+    return this.decideNewState(options);
+  }
+
+  * climb() {
+    let newState = this.getNewState();
+    while (this.currentState != newState) {
+      yield newState;
+      newState = this.getNewState();
+    }
+    return newState;
   }
 }
