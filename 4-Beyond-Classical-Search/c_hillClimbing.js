@@ -162,7 +162,7 @@ $(document).ready(function() {
     constructor(selector, h, w) {
       super(selector, h, w);
       this.bindClicks();
-      
+
       this.borderPath = this.svg.append('rect')
         .attr('x', this.hillDiagram.padding)
         .attr('y', 0)
