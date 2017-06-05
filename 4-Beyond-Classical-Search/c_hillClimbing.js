@@ -162,6 +162,15 @@ $(document).ready(function() {
     constructor(selector, h, w) {
       super(selector, h, w);
       this.bindClicks();
+      
+      this.borderPath = this.svg.append('rect')
+        .attr('x', this.hillDiagram.padding)
+        .attr('y', 0)
+        .attr('height', this.h)
+        .attr('width', this.w - 2 * this.hillDiagram.padding)
+        .style('stroke', 'black')
+        .style('fill', 'none')
+        .style('stroke-width', 1);
 
       this.moves = 0;
       this.maxMoves = 25;
@@ -193,13 +202,20 @@ $(document).ready(function() {
           }
         }
       };
+
       this.svg.on('mousedown', this.clickHandler);
+    }
+
+    updateMoves() {
+      let leftMoves = this.maxMoves - this.moves;
+      if (leftMoves >= 0) {
+        d3.select('#hillMoves').html('Moves Left :' + (this.maxMoves - this.moves));
+      }
     }
     finish() {
       this.hillDiagram.showAll();
     }
   }
-  //Class to draw the hills
 
   function init() {
     var diagram = new InteractiveHillWorld('#hillCanvas', 500, 1000);
@@ -207,6 +223,7 @@ $(document).ready(function() {
   init();
   $('#hillClimbRestart').click(init);
 });
+
 //Second diagram (Hill climbing Search)
 $(document).ready(function() {
   class HCSearchDiagram extends HillWorld {
