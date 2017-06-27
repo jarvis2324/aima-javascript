@@ -3,9 +3,10 @@
 }
 
 /*nc -> No color*/
-.territory-text{
-  stroke:none;
-  fill:black;
+
+.territory-text {
+  stroke: none;
+  fill: black;
 }
 svg .nc {
   fill: hsl(0, 0%, 83%);
@@ -32,4 +33,58 @@ svg .b {
 .status {
   fill: black;
   stroke: none;
+}
+svg .cell {
+  fill: hsl(0, 0%, 95%);
+  stroke: black;
+  stroke-width: 1;
+}
+svg .cell.grey {
+  fill: hsl(0, 0%, 83%);
+}
+svg .cell-number {
+  font-size: 200%;
+  alignment-baseline: middle;
+  text-anchor: middle;
+  stroke: none;
+  fill: black;
+}
+svg .cell-dots {
+  font-size: 100%;
+  alignment-baseline: middle;
+  text-anchor: middle;
+  stroke: none;
+  fill: black;
+}
+svg .domain-text {
+  font-size: 200%;
+  alignment-baseline: middle;
+  text-anchor: middle;
+  stroke: none;
+  fill: black;
+}
+svg .cell.highlight {
+  fill: hsl(31, 92%, 74%)
+}
+svg .cell.active-cell {
+  fill: hsl(31, 92%, 60%)
+}
+svg .highlight-border {
+  fill: none;
+  stroke-width: 3;
+}
+svg .original-domain {
+  text-anchor: middle;
+  alignment-baseline: middle;
+  stroke: none;
+  fill: black;
+}
+svg .invisible {
+  display: block;
+}
+svg .cell-dots {
+  fill: hsl(205, 100%, 20%);
+}
+svg .highlight-dot {
+  fill: hsl(337, 63%, 50%);
 }

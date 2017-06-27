@@ -15,12 +15,14 @@
   <script type="text/javascript" src="./minConflicts.js"></script>
   <script type="text/javascript" src="./treeCSP.js"></script>
   <script type="text/javascript" src="./mapColoring.js"></script>
+  <script type="text/javascript" src="./sudoku.js"></script>
 
   <script type="text/javascript" src="./c_AC3.js"></script>
   <script type="text/javascript" src="./c_backtracking.js"></script>
   <script type="text/javascript" src="./c_minConflicts.js"></script>
   <script type="text/javascript" src="./c_treeCSP.js"></script>
   <script type="text/javascript" src="./c_mapColoring.js"></script>
+  <script type="text/javascript" src="./c_sudoku.js"></script>
 </head>
 
 <body>
@@ -63,7 +65,38 @@
       <p>Step by step visualization of the procedure. Click to restart the simulation.</p>
       <div class="canvas" id="ac3Canvas" height="300px">
       </div>
-      <pre id="AC3Code"></pre>
+
+      <h2>Sudoku Example of CSP</h2>
+      <p>All sudoku puzzles can be forumulated as CSP by considering each <b>cell</b> as a variable. The initial domain of all cells is {1,2,3,4,5,6,7,8,9}.
+        <br> The constraints are formulated by the fact that in the solution of a sudoku puzzle, no two cell in a row, column or block can have identical numbers. Thus, there is an
+        <b>AllDiff( )</b> constraint for all the rows, columns and blocks.</p>
+      <p>
+        The given sudoku puzzle calculates the reduced domain for each cell and shows them as dots. You can hover over any cell to see how the domain was reduced on the right side of the puzzle. The colors of the cross denote if the number was eliminated due
+        to <span style="color:green;font-size:120%">row</span>, <span style="color:blue;font-size:120%">column</span> or <span style="color:red;font-size:120%">block</span>. If the domain of a cell has reduced to <b>just 1 variable (or number)</b>,
+        this means we can safely assign that number there. This will further reduce the domain of other cells. Click to assign the number.
+      </p>
+      <p>
+        Try to solve the entire puzzle by assigning numbers by clicking on cells whose domains have reduced to 1 variable.
+        <br> Use the restart button to reset the puzzle.
+      </p>
+
+      <div id='sudoku'>
+        <div class="row">
+          <div class='btn btn-primary restart-button' style="margin-left:2%">Restart</div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="canvas">
+
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="cellDetails">
+
+            </div>
+          </div>
+        </div>
+      </div>
 
       <h2>Backtracking</h2>
       <p>Map colouring using backtracking. Click to restart the simulation.</p>
