@@ -116,7 +116,6 @@ class AustraliaMapDiagram {
     for(let i = 0; i < this.territories.length; i++) {
       let territory = this.territories[i];
       this.root.select(territory[1])
-
         .append('text')
         .classed('territory-text',true)
         .attr('x', this.w *territory[2])
@@ -132,6 +131,32 @@ $(document).ready(function() {
     d3.xml('../third-party/australia.svg', (xml) => {
       $('#mapColoring .canvas').html(xml.documentElement);
       var australiaMapDiagram = new AustraliaMapDiagram(d3.select('#mapColoring').select('.canvas'), 500, 1000);
+      //Map Coloring Problem for Australia
+      var australiaMapColoringProblem = new mapColoringProblem(
+        ["WA", "NT", "SA", "Q", "NSW", "V", "T"], {
+          "WA": ["r", "g", "b"],
+          "NT": ["r", "g", "b"],
+          "SA": ["r", "g", "b"],
+          "Q": ["r", "g", "b"],
+          "NSW": ["r", "g", "b"],
+          "V": ["r", "g", "b"],
+          "T": ["r", "g", "b"]
+        }, {
+          "WA": ["NT", "SA"],
+          "NT": ["WA", "SA", "Q"],
+          "SA": ["WA", "NT", "Q", "NSW", "V"],
+          "Q": ["NT", "SA", "NSW"],
+          "NSW": ["Q", "SA", "V"],
+          "V": ["SA", "NSW"],
+          "T": []
+        },
+        function(A, a, B, b) {
+          //If no color
+          if (a == 'nc' || b == 'nc') {
+            return true;
+          }
+          return a != b;
+        });
       australiaMapColoringProblem.emptyAssignment();
       australiaMapDiagram.init(australiaMapColoringProblem);
     })

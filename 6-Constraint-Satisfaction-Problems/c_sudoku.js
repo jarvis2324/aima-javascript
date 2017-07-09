@@ -301,6 +301,7 @@ class CellDetails {
 
     }
     //Fills the Xs
+
   showConstraints(color, set) {
       for (let i = 0; i < 9; i++) {
         if (set.has(i + 1)) {
@@ -315,6 +316,7 @@ class CellDetails {
       }
     }
     //Shows the 1-9
+
   showDomain() {
       this.originalDomain = this.domainWrapper.append('g');
       this.domainElements = [];
@@ -329,6 +331,7 @@ class CellDetails {
 
     }
     //Shows the reduced domain below
+
   showReducedDomain(set) {
       if (set.size > 0) {
         let str = `Reduced Domain : (${[...set].toString()})`;
@@ -340,6 +343,7 @@ class CellDetails {
       }
     }
     //Remove everything
+
   removeDomain() {
     this.domainWrapper.selectAll('*').remove();
   }

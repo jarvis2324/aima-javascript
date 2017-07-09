@@ -98,11 +98,43 @@
         </div>
       </div>
 
-      <h2>Backtracking</h2>
-      <p>Map colouring using backtracking. Click to restart the simulation.</p>
-      <div class="canvas" id="backtrackCanvas" height="300px">
+      <h2>Backtracking Search</h2>
+      <p>Backtracking Search is a type of Search algorithm that is useful to solve CSPs. It interweaves inferences and search to arrive at a solution by pruning parts of the search tree.</p>
+      <p>It repeatedly chooses an unassigned variable and tries all the possible values for it. If any inconsistency is detected, it backtracks and tries another value for the previous assignment.</p>
+      <p>In the diagram below, order of selection of variable as well as the order of values for the variable is chosen randomly. Use the <b>Next</b> button to move forward and <b>Previous</b> button to go back. You can also use the slider to go to any state
+        directly.
+      </p>
+      <p>Restart the diagrams several times and notice how many assignments a random ordering takes. Try to figure out why a particular ordering performs well (or bad).</p>
+      <div id='backtracking'>
+        <div class="row">
+          <div class='btn btn-primary restart-button'>Restart</div>
+        </div>
+        <div class="row animation-controls">
+          <div class="col-md-1">
+            <div class='btn btn-default prevButton'>Previous</div>
+          </div>
+          <div class="col-md-4">
+            <input class='slider' id='backtrackSlider' type="range" steps="1" min='0' value="0">
+          </div>
+          <div class="col-md-1">
+            <div class='btn btn-default nextButton'>Next</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="canvas">
+            <div class="row header">
+              <h5>Assignments : <span class="counter"></span></h5>
+            </div>
+            <div class="row maps">
+
+            </div>
+            <div class="row assign-table">
+
+            </div>
+          </div>
+        </div>
       </div>
-      <pre id="backtrackingCode"></pre>
+
       <h2>Min Conflicts</h2>
       <p>Min conflicts stuff</p>
       <div class="canvas" id="minConflictsCanvas" height="300px">

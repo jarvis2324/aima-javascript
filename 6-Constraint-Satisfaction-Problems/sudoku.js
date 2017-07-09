@@ -14,10 +14,12 @@ class SudokuPuzzle {
   isFilled(i, j) {
     return (this.puzzle[i][j] != 0);
   }
+
   isValid(i, j) {
       return (i >= 0 && i < this.maxRow && j >= 0 && j < this.maxCol);
     }
     //Returns a set of numbers present in the column
+
   getColumn(row, column) {
       let columnSet = new Set();
       for (let i = 0; i < this.maxRow; i++) {
@@ -28,6 +30,7 @@ class SudokuPuzzle {
       return columnSet;
     }
     //Returns a set of numbers present in the row
+
   getRow(row, column) {
       let rowSet = new Set();
       for (let i = 0; i < this.maxCol; i++) {
@@ -38,6 +41,7 @@ class SudokuPuzzle {
       return rowSet;
     }
     //Returns a set of numbers present in the block
+
   getBlock(row, column) {
       let blockSet = new Set();
       for (let i = (row - (row % this.blockSize)); i < (row + this.blockSize - (row % this.blockSize)); i++) {
@@ -51,6 +55,7 @@ class SudokuPuzzle {
     }
     //Eliminate row,column and block are defined as separate functions to be used
     //by the diagram separately.
+
   eliminateRow(row, column) {
     let rowSet = this.getRow(row, column)
     return new Set([...this.domainSet].filter(x => !rowSet.has(x)));
@@ -86,6 +91,7 @@ class SudokuPuzzle {
     }
     //Checks if there is only 1 possible assignment
     //Returns false if more than 1 and the value otherwise
+
   checkSingle(i, j) {
     let domain = this.getDomain(i, j);
     if (domain.size > 1) {
