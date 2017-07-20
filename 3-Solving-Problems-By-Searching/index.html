@@ -6,10 +6,12 @@
   <link rel="stylesheet" href="../styles.css">
   <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
   <script type="text/javascript" src="../main.js"></script>
-  
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.min.js"></script>
-  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.min.js"></script>
+
   <script type="text/javascript" src="./helpers.js"></script>
+  <script type="text/javascript" src="./gitter-grid.js"></script>
   <script type="text/javascript" src="./aStarSearch.js"></script>
   <script type="text/javascript" src="./bestFirstSearch.js"></script>
   <script type="text/javascript" src="./breadthFirstSearch.js"></script>
@@ -18,6 +20,7 @@
   <script type="text/javascript" src="./iterativeDeepening.js"></script>
   <script type="text/javascript" src="./uniformCostSearch.js"></script>
   <script type="text/javascript" src="./costDetails.js"></script>
+  <script type="text/javascript" src="./bi-directional.js"></script>
 
   <script type="text/javascript" src="./c_aStarSearch.js"></script>
   <script type="text/javascript" src="./c_bestFirstSearch.js"></script>
@@ -28,6 +31,8 @@
   <script type="text/javascript" src="./c_uniformCostSearch.js"></script>
   <script type="text/javascript" src="./c_nodeExpansion.js"></script>
   <script type="text/javascript" src="./c_costDetails.js"></script>
+  <script type="text/javascript" src="./c_bi-directional.js"></script>
+
 </head>
 
 <body>
@@ -360,6 +365,29 @@
           </div>
         </div>
       </div>
+      <h2>Bi-directional BFS</h2>
+      <p>In bi-directional BFS, we run two simultaneous searches, one from the initial state and one from the goal state. We stop when these searches meet in the middle (ie, a node is explored by both the BFS)</p>
+      <p>The motivation behind this is that <b>b<sup>d/2</sup> + b<sup>d/2</sup> is smaller than b<sup>d</sup></b></p>
+      <p>In the diagram below, we compare the performance between bi-directional BFS and standard BFS side by side. The total number of nodes generated for each strategy is given below the diagram.</p>
+      <p>Notice that the further apart the final node is from the initial node, the better bi-directional BFS performs (as compared to standard BFS). Use the restart button to restart the simulation.</p>
+      <div id='backtracking'>
+        <div class="row">
+          <div class='btn btn-primary restart-button'>Restart</div>
+        </div>
+        <div class="row" style="margin-top:1%">
+          <div class="col-md-6">
+            <h2 style="text-align:center;">Bi-directional BFS</h2>
+            <div class="canvas" id='biCanvas' height="300px"></div>
+            <h1 id = 'biStepCount' style="text-align:center;margin-top:0%;"></h1>
+          </div>
+          <div class="col-md-6">
+            <h2 style="text-align:center;">Standard BFS</h2>
+            <div class="canvas" id='bfsCanvas' height="300px"></div>
+            <h1 id = 'bfsStepCount' style="text-align:center;margin-top:0%;"></h1>
+          </div>
+        </div>
+      </div>
+
 
       <h2>A Star Search</h2>
       <p>Click on the canvas to restart the simulation</p>
