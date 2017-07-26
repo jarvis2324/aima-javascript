@@ -61,9 +61,9 @@ $(document).ready(function() {
     intervalFunction = setInterval(updateFunction, DELAY);
   };
   $('#ucsRestartButton').click(init);
-  $('#ucsWaiting').css('background-color', 'hsl(200,50%,70%)');
-  $('#ucsNextNode').css('background-color', 'hsla(126, 100%, 69%, 1)');
-  $('#ucsExploredNode').css('background-color', 'hsl(0,50%,75%)');
+  $('#ucsWaiting').css('background-color', 'hsl(0,50%,75%)');
+  $('#ucsNextNode').css('background-color', 'hsl(126, 100%, 69%)');
+  $('#ucsExploredNode').css('background-color', 'hsl(200,50%,70%)');
   init();
 });
 //Function to draw the list of nodes for both canvas

@@ -34,7 +34,7 @@ $(document).ready(function() {
     intervalFunction = setInterval(updateFunction, DELAY);
   };
   $('#bfsRestartButton').click(init);
-  $('#fifoWaiting').css('background-color', 'hsl(200,50%,70%)');
-  $('#fifoNextNode').css('background-color', 'hsla(126, 100%, 69%, 1)');
+  $('#fifoWaiting').css('background-color', 'hsl(0,50%,75%)');
+  $('#fifoNextNode').css('background-color', 'hsl(126, 100%, 69%)');
   init();
 });

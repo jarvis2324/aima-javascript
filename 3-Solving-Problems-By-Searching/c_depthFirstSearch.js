@@ -33,7 +33,7 @@ $(document).ready(function() {
     intervalFunction = setInterval(updateFunction, DELAY);
   };
   $('#dfsRestartButton').click(init);
-  $('#lifoWaiting').css('background-color', 'hsl(200,50%,70%)');
-  $('#lifoNextNode').css('background-color', 'hsla(126, 100%, 69%, 1)');
+  $('#lifoWaiting').css('background-color', 'hsl(0,50%,75%)');
+  $('#lifoNextNode').css('background-color', 'hsl(126, 100%, 69%)');
   init();
 });

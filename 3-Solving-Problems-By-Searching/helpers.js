@@ -26,7 +26,7 @@ function getEdgeCostLocation(x1, y1, x2, y2) {
 var DefaultOptions = function() {
     this.nodes = {
       explored: {
-        fill: 'hsl(0,50%,75%)',
+        fill: 'hsl(200,50%,70%)',
         stroke: 'black',
         opacity: 1,
         clickHandler: null,
@@ -42,7 +42,7 @@ var DefaultOptions = function() {
         onMouseLeave: null
       },
       frontier: {
-        fill: 'hsl(200,50%,70%)',
+        fill: 'hsl(0,50%,75%)',
         stroke: 'black',
         opacity: 1,
         clickHandler: null,
